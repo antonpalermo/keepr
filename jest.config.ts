@@ -1,14 +1,14 @@
 export default {
-  displayName: 'keepr',
-  preset: './jest.preset.js',
+  displayName: "keepr",
+  preset: "./jest.preset.js",
   transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/next/babel'] }],
+    "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "@nx/react/plugins/jest",
+    "^.+\\.[tj]sx?$": ["babel-jest", { presets: ["@nx/next/babel"] }]
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: './coverage/keepr',
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+  coverageDirectory: "./coverage/keepr",
   testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.[jt]s?(x)',
-    '<rootDir>/src/**/*(*.)@(spec|test).[jt]s?(x)',
-  ],
-};
+    "<rootDir>/src/**/__tests__/**/*.[jt]s?(x)",
+    "<rootDir>/src/**/*(*.)@(spec|test).[jt]s?(x)"
+  ]
+}

@@ -30,4 +30,4 @@ const AssetSchema = new mongoose.Schema<Assets>(
 )
 
 export default mongoose.models.Assets ||
-  mongoose.model<Assets>("assets", AssetSchema)
+  mongoose.model<Assets>("Assets", AssetSchema)

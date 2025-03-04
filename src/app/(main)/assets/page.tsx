@@ -1,5 +1,5 @@
 import connect from "@/lib/database"
-import AssetRegistrationForm from "./_components/form"
+import RegisterAssetForm from "./_components/form"
 import asset from "@/models/assets"
 
 async function getAssets() {
@@ -13,7 +13,7 @@ export default async function AssetsPage() {
   return (
     <div>
       <h1>Assets</h1>
-      <AssetRegistrationForm />
+      <RegisterAssetForm />
       {JSON.stringify(assets)}
     </div>
   )

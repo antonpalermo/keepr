@@ -1,30 +1,57 @@
-import connect from "@/lib/database"
-import Assets from "@/models/assets"
-import { revalidatePath } from "next/cache"
+"use client"
 
-export default function AssetRegistrationForm() {
-  async function registerAsset(formData: FormData) {
-    "use server"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-    const name = formData.get("asset-name")
+import {
+  Form,
+  FormItem,
+  FormField,
+  FormLabel,
+  FormControl,
+  FormDescription
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
-    await connect()
+import { onRegisterAsset } from "../_actions/register-assets"
+import assetSchema, { AssetFormSchema } from "../_lib/asset-form-schema"
+import { useFormState } from "react-dom"
 
-    try {
-      await Assets.create({ name })
-      revalidatePath("/assets")
-    } catch (e) {
-      console.log(e)
-    }
+export default function RegisterAssetForm() {
+
+
+  const defaultValues: AssetFormSchema = {
+    name: ""
+  }
+
+  const form = useForm<AssetFormSchema>({
+    defaultValues,
+    resolver: zodResolver(assetSchema)
+  })
+
+  async function onSubmit(values: AssetFormSchema) {
+    console.log(values)
   }
 
   return (
-    <form action={registerAsset}>
-      <div>
-        <label htmlFor="asset-name">Asset Name</label>
-        <input type="text" name="asset-name" id="asset-name" />
-      </div>
-      <button>Register</button>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          name="name"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Asset Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Mouse" {...field} />
+              </FormControl>
+              <FormDescription>Give your asset awesome name!</FormDescription>
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Register</Button>
+      </form>
+    </Form>
   )
 }

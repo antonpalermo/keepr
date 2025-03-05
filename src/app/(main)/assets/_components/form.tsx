@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -14,29 +16,42 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
+import assetSchema, { AssetFormSchema } from "../form-schema"
 import { onRegisterAsset } from "../_actions/register-assets"
-import assetSchema, { AssetFormSchema } from "../_lib/asset-form-schema"
-import { useFormState } from "react-dom"
 
 export default function RegisterAssetForm() {
-
-
-  const defaultValues: AssetFormSchema = {
-    name: ""
-  }
-
-  const form = useForm<AssetFormSchema>({
-    defaultValues,
-    resolver: zodResolver(assetSchema)
+  const [isPending, startTransition] = React.useTransition()
+  const [state, formAction] = React.useActionState(onRegisterAsset, {
+    message: "",
+    fields: undefined
   })
 
-  async function onSubmit(values: AssetFormSchema) {
-    console.log(values)
-  }
+  const form = useForm<AssetFormSchema>({
+    resolver: zodResolver(assetSchema),
+    defaultValues: {
+      name: ""
+    }
+  })
+
+  const formRef = React.useRef<HTMLFormElement>(null)
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      {JSON.stringify(state)}
+      <form
+        ref={formRef}
+        action={formAction}
+        onSubmit={e => {
+          e.preventDefault()
+          form.handleSubmit(async () => {
+            startTransition(async () => {
+              if (formRef.current) {
+                formAction(new FormData(formRef.current))
+              }
+            })
+          })(e)
+        }}
+      >
         <FormField
           name="name"
           control={form.control}
@@ -50,7 +65,9 @@ export default function RegisterAssetForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Register</Button>
+        <Button type="submit" disabled={isPending}>
+          Register
+        </Button>
       </form>
     </Form>
   )

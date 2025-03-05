@@ -1,10 +1,10 @@
 import mongoose from "mongoose"
 
-export interface Assets extends mongoose.Document {
+export interface Asset extends mongoose.Document {
   name: string
 }
 
-const AssetSchema = new mongoose.Schema<Assets>(
+const AssetSchema = new mongoose.Schema<Asset>(
   {
     name: {
       type: mongoose.Schema.Types.String,
@@ -30,4 +30,4 @@ const AssetSchema = new mongoose.Schema<Assets>(
 )
 
 export default mongoose.models.Assets ||
-  mongoose.model<Assets>("Assets", AssetSchema)
+  mongoose.model<Asset>("Assets", AssetSchema)

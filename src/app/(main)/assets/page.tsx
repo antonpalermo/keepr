@@ -7,7 +7,9 @@ import { DataTable } from "./_components/data-table"
 
 async function getAssets() {
   await connect()
-  return await asset.find()
+  const assets = await asset.find()
+
+  return JSON.stringify(assets)
 }
 
 export default async function AssetsPage() {
@@ -17,7 +19,7 @@ export default async function AssetsPage() {
     <div>
       <h1>Assets</h1>
       <RegisterAssetForm />
-      <DataTable columns={columns} data={JSON.parse(JSON.stringify(assets))} />
+      <DataTable columns={columns} data={JSON.parse(assets)} />
     </div>
   )
 }

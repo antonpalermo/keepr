@@ -22,6 +22,7 @@ import { onRegisterAsset } from "../_actions/register-assets"
 export default function RegisterAssetForm() {
   const [isPending, startTransition] = React.useTransition()
   const [state, formAction] = React.useActionState(onRegisterAsset, {
+    success: false,
     message: "",
     fields: undefined
   })

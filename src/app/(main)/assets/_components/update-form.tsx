@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-import assetSchema, { AssetFormSchema } from "../form-schema"
+import assetSchema, { AssetFormSchema } from "../schema"
 import { updateAsset } from "../actions"
 
 export default function UpdateForm({

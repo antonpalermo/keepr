@@ -16,12 +16,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-import assetSchema, { AssetFormSchema } from "../form-schema"
-import { onRegisterAsset } from "../_actions/register-assets"
+import assetSchema, { AssetFormSchema } from "../schema"
+import { registerAsset } from "../actions"
 
 export default function RegisterAssetForm() {
   const [isPending, startTransition] = React.useTransition()
-  const [state, formAction] = React.useActionState(onRegisterAsset, {
+  const [state, formAction] = React.useActionState(registerAsset, {
     success: false,
     message: "",
     fields: undefined

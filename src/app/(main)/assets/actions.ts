@@ -3,7 +3,6 @@
 import connect from "@/lib/database"
 import assets from "@/models/assets"
 
-import { Schema } from "mongoose"
 import { revalidatePath } from "next/cache"
 
 export interface FormState {
@@ -11,6 +10,27 @@ export interface FormState {
   message: string
   fields?: Record<string, string>
   issues?: string[]
+}
+
+export async function updateAsset(id: string, formData: FormData) {
+  try {
+    const data = Object.fromEntries(formData)
+
+    if (!id) {
+      return { success: false, message: "id is required" }
+    }
+
+    await connect()
+    await assets.findByIdAndUpdate(id, { ...data })
+
+    revalidatePath("/assets")
+    return { success: true, message: "asset successfully updated" }
+  } catch (e) {
+    return {
+      success: false,
+      message: "unable to remove asset"
+    }
+  }
 }
 
 export async function removeAsset(id: string) {

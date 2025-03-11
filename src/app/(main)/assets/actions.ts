@@ -53,9 +53,25 @@ export async function registerAsset(
 export async function updateAsset(id: string, formData: FormData) {
   try {
     const data = Object.fromEntries(formData)
+    const parsed = schema.safeParse(data)
 
     if (!id) {
       return { success: false, message: "id is required" }
+    }
+
+    if (!parsed.success) {
+      const fields: Record<string, string> = {}
+
+      for (const key of Object.keys(formData)) {
+        fields[key] = data[key].toString()
+      }
+
+      return {
+        success: false,
+        fields,
+        message: "Error in asset registration.",
+        issues: parsed.error.issues.map(issue => issue.message)
+      }
     }
 
     await connect()

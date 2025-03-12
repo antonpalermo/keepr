@@ -6,9 +6,11 @@ export interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div>
-      <h1>Dashboard Layout</h1>
+    <main className="container mx-auto px-5">
+      <nav className="py-4">
+        <h1>Keepr</h1>
+      </nav>
       {children}
-    </div>
+    </main>
   )
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import TableMenu from "./menu"
 
 interface Asset {
   id: string
@@ -14,15 +13,7 @@ const columns: ColumnDef<Asset>[] = [
   { accessorKey: "id", header: "ID" },
   { accessorKey: "name", header: "Name" },
   { accessorKey: "dateCreated", header: "Date Created" },
-  { accessorKey: "dateUpdated", header: "Date Updated" },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const asset = row.original
-
-      return <TableMenu asset={asset} />
-    }
-  }
+  { accessorKey: "dateUpdated", header: "Date Updated" }
 ]
 
 export default columns

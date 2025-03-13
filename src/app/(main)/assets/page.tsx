@@ -6,25 +6,25 @@ import columns from "./_components/columns"
 import { DataTable } from "./_components/data-table"
 
 import Shell from "@/components/shell"
+import { useQuery } from "@tanstack/react-query"
+import { Button } from "@/components/ui/button"
 
 export default function AssetsPage() {
-  const [assets, setAssets] = React.useState([])
-
-  React.useEffect(() => {
-    async function getAssets() {
+  const { data: assets } = useQuery({
+    queryKey: ["assets"],
+    queryFn: async () => {
       const request = await fetch("/api/assets")
-      const payload = await request.json()
-
-      setAssets(payload.data)
+      return await request.json()
     }
-
-    getAssets()
-  }, [])
+  })
 
   return (
     <Shell>
-      <Shell.Heading>Assets</Shell.Heading>
-      <DataTable columns={columns} data={assets} />
+      <div className="flex flex-row justify-between items-center">
+        <Shell.Heading>Assets</Shell.Heading>
+        <Button>Asset Registration</Button>
+      </div>
+      <DataTable columns={columns} data={assets.data} />
     </Shell>
   )
 }

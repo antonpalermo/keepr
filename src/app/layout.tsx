@@ -1,6 +1,9 @@
-import { cn } from "@/lib/utils"
-import "./global.css"
 import { Inter } from "next/font/google"
+
+import { cn } from "@/lib/utils"
+import QueryClientProvider from "@/components/providers/query-client"
+
+import "./global.css"
 
 export const metadata = {
   title: "Welcome to keepr",
@@ -19,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "min-h-screen")}>{children}</body>
+      <body className={cn(inter.className, "min-h-screen")}>
+        <QueryClientProvider>{children}</QueryClientProvider>
+      </body>
     </html>
   )
 }

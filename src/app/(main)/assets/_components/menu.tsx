@@ -9,21 +9,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVerticalIcon } from "lucide-react"
+import { EllipsisVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react"
 
 export default function TableMenu({ asset }: { asset: any }) {
+  const options = [
+    {
+      label: "Edit",
+      icon: <PencilIcon />,
+      onClick: () => {
+        console.log("edit" + asset.id)
+      }
+    },
+    {
+      label: "Delete",
+      icon: <Trash2Icon />,
+      onClick: () => {
+        console.log("delete" + asset.id)
+      }
+    }
+  ]
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button variant={"ghost"} size={"icon"}>
           <EllipsisVerticalIcon />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Options</DropdownMenuLabel>
+        <DropdownMenuLabel>Asset Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        {options.map(option => (
+          <DropdownMenuItem key={option.label} onClick={option.onClick}>
+            {option.icon && option.icon}
+            {option.label}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   )

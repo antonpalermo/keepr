@@ -10,13 +10,15 @@ import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 
 export default function AssetsPage() {
-  const { data: assets } = useQuery({
+  const { data: assets, isPending } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
       const request = await fetch("/api/assets")
       return await request.json()
     }
   })
+
+  if (isPending) return <h1>loading</h1>
 
   return (
     <Shell>

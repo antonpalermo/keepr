@@ -38,7 +38,6 @@ export default function RegisterAssetForm() {
 
   return (
     <Form {...form}>
-      {JSON.stringify(state)}
       <form
         ref={formRef}
         action={formAction}

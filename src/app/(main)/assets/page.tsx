@@ -8,9 +8,9 @@ import { DataTable } from "./_components/data-table"
 import Shell from "@/components/shell"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function AssetsPage() {
-  const [isClient, setIsClient] = React.useState(false)
   const { data: assets, isPending } = useQuery({
     queryKey: ["assets"],
     queryFn: async () => {
@@ -24,17 +24,15 @@ export default function AssetsPage() {
     }
   })
 
-  React.useEffect(() => {
-    setIsClient(true)
-  }, [])
-
   if (isPending) return <h1>loading</h1>
 
   return (
     <Shell>
       <div className="flex flex-row justify-between items-center">
         <Shell.Heading>Assets</Shell.Heading>
-        <Button>Asset Registration</Button>
+        <Button asChild>
+          <Link href={"/assets/new"}>Asset Registration</Link>
+        </Button>
       </div>
       <DataTable columns={columns} data={assets.data} />
     </Shell>

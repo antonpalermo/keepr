@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 
 import {
   Form,
@@ -17,15 +18,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 import assetSchema, { AssetFormSchema } from "../schema"
-import { registerAsset } from "../actions"
 
 export default function RegisterAssetForm() {
-  const [isPending, startTransition] = React.useTransition()
-  const [state, formAction] = React.useActionState(registerAsset, {
-    success: false,
-    message: "",
-    fields: undefined
-  })
+  const router = useRouter()
 
   const form = useForm<AssetFormSchema>({
     resolver: zodResolver(assetSchema),
@@ -34,24 +29,26 @@ export default function RegisterAssetForm() {
     }
   })
 
-  const formRef = React.useRef<HTMLFormElement>(null)
+  async function handleSubmit(values: AssetFormSchema) {
+    try {
+      const request = await fetch("/api/assets", {
+        method: "POST",
+        body: JSON.stringify(values)
+      })
+
+      if (!request.ok) {
+        throw new Error("unable to create asset")
+      }
+
+      router.back()
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <Form {...form}>
-      <form
-        ref={formRef}
-        action={formAction}
-        onSubmit={e => {
-          e.preventDefault()
-          form.handleSubmit(async () => {
-            startTransition(async () => {
-              if (formRef.current) {
-                formAction(new FormData(formRef.current))
-              }
-            })
-          })(e)
-        }}
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <FormField
           name="name"
           control={form.control}
@@ -65,7 +62,7 @@ export default function RegisterAssetForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
           Register
         </Button>
       </form>

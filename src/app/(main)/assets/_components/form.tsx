@@ -18,9 +18,33 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 import assetSchema, { AssetFormSchema } from "../schema"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 export default function RegisterAssetForm() {
   const router = useRouter()
+  const qClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: async (values: AssetFormSchema) => {
+      try {
+        const request = await fetch("/api/assets", {
+          method: "POST",
+          body: JSON.stringify(values)
+        })
+
+        if (!request.ok) {
+          throw new Error("unable to create asset")
+        }
+
+        router.back()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    onSuccess: () => {
+      qClient.invalidateQueries({ queryKey: ["assets"] })
+    }
+  })
 
   const form = useForm<AssetFormSchema>({
     resolver: zodResolver(assetSchema),
@@ -30,20 +54,7 @@ export default function RegisterAssetForm() {
   })
 
   async function handleSubmit(values: AssetFormSchema) {
-    try {
-      const request = await fetch("/api/assets", {
-        method: "POST",
-        body: JSON.stringify(values)
-      })
-
-      if (!request.ok) {
-        throw new Error("unable to create asset")
-      }
-
-      router.back()
-    } catch (error) {
-      console.log(error)
-    }
+    mutation.mutate(values)
   }
 
   return (

@@ -2,17 +2,29 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import TableMenu from "./menu"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 interface Asset {
   id: string
   name: string
-  dateCreated: any
-  dateUpdated: any
+  dateCreated: Date
+  dateUpdated: Date
 }
 
 const columns: ColumnDef<Asset>[] = [
   { accessorKey: "id", header: "ID" },
-  { accessorKey: "name", header: "Name" },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => {
+      return (
+        <Button variant={"link"} asChild>
+          <Link href={`/assets/${row.original.id}`}>{row.original.name}</Link>
+        </Button>
+      )
+    }
+  },
   { accessorKey: "dateCreated", header: "Date Created" },
   { accessorKey: "dateUpdated", header: "Date Updated" },
   {

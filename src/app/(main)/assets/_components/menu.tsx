@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -9,7 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react"
+import { EllipsisVerticalIcon, PencilIcon } from "lucide-react"
+import AssetDeleteModal from "./delete-modal"
 
 export default function TableMenu({ asset }: { asset: any }) {
   const options = [
@@ -18,13 +21,6 @@ export default function TableMenu({ asset }: { asset: any }) {
       icon: <PencilIcon />,
       onClick: () => {
         console.log("edit" + asset.id)
-      }
-    },
-    {
-      label: "Delete",
-      icon: <Trash2Icon />,
-      onClick: () => {
-        console.log("delete" + asset.id)
       }
     }
   ]
@@ -45,6 +41,7 @@ export default function TableMenu({ asset }: { asset: any }) {
             {option.label}
           </DropdownMenuItem>
         ))}
+        <AssetDeleteModal asset={asset} />
       </DropdownMenuContent>
     </DropdownMenu>
   )

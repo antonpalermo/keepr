@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog"
+import UpdateForm from "@/app/(main)/assets/_components/update-form"
 
 export default function EditAsset() {
   const router = useRouter()
@@ -26,6 +27,7 @@ export default function EditAsset() {
             Creates a new record for specific asset.
           </DialogDescription>
         </DialogHeader>
+        <UpdateForm />
       </DialogContent>
     </Dialog>
   )

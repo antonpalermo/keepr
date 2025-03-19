@@ -17,50 +17,50 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 import assetSchema, { AssetFormSchema } from "../schema"
-import { updateAsset } from "../actions"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useParams, useRouter } from "next/navigation"
 
-export default function UpdateForm({
-  asset
-}: {
-  asset: { id: string; name: string }
-}) {
-  const onUpdateAsset = updateAsset.bind(null, asset.id)
+export default function UpdateForm() {
+  const router = useRouter()
+  const params = useParams()
 
-  const [isPending, startTransition] = React.useTransition()
-  const [state, formAction] = React.useActionState(
-    async (_: any, formData: FormData) => await onUpdateAsset(formData),
-    {
-      success: false,
-      message: ""
+  const qClient = useQueryClient()
+  const mutate = useMutation({
+    mutationFn: async values => {
+      try {
+        const request = await fetch(`/api/assets/${params.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(values)
+        })
+
+        if (!request.ok) {
+          throw new Error("unable to update " + params.id)
+        }
+
+        router.back()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    onSuccess: () => {
+      qClient.invalidateQueries({ queryKey: ["assets"] })
     }
-  )
+  })
 
   const form = useForm<AssetFormSchema>({
     resolver: zodResolver(assetSchema),
     defaultValues: {
-      name: asset.name
+      name: ""
     }
   })
 
-  const formRef = React.useRef<HTMLFormElement>(null)
+  async function handleUpdate(values: any) {
+    mutate.mutate(values)
+  }
 
   return (
     <Form {...form}>
-      {JSON.stringify(state)}
-      <form
-        ref={formRef}
-        action={formAction}
-        onSubmit={e => {
-          e.preventDefault()
-          form.handleSubmit(async () => {
-            startTransition(async () => {
-              if (formRef.current) {
-                formAction(new FormData(formRef.current))
-              }
-            })
-          })(e)
-        }}
-      >
+      <form onSubmit={form.handleSubmit(handleUpdate)}>
         <FormField
           name="name"
           control={form.control}
@@ -74,9 +74,7 @@ export default function UpdateForm({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
-          Update
-        </Button>
+        <Button type="submit">Update</Button>
       </form>
     </Form>
   )

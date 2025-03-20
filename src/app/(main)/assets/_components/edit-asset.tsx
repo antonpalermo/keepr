@@ -20,13 +20,13 @@ import assetSchema, { AssetFormSchema } from "../schema"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useParams, useRouter } from "next/navigation"
 
-export default function UpdateForm() {
+export default function EditAssetForm() {
   const router = useRouter()
   const params = useParams()
 
   const qClient = useQueryClient()
   const mutate = useMutation({
-    mutationFn: async values => {
+    mutationFn: async (values: AssetFormSchema) => {
       try {
         const request = await fetch(`/api/assets/${params.id}`, {
           method: "PATCH",
@@ -54,7 +54,7 @@ export default function UpdateForm() {
     }
   })
 
-  async function handleUpdate(values: any) {
+  async function handleUpdate(values: AssetFormSchema) {
     mutate.mutate(values)
   }
 

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog"
 import RegisterAssetForm from "../../_components/form"
 
-export default function NewAsset() {
+export default function NewAssetModal() {
   const router = useRouter()
 
   function handleOnOpenChange() {

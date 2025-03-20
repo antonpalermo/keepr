@@ -1,12 +1,12 @@
 "use client"
 
-import UpdateForm from "../../_components/update-form"
+import EditAssetForm from "../../_components/edit-asset"
 
 export default function EditAssetPage() {
   return (
     <div>
       <h1>Edit Asset Page</h1>
-      <UpdateForm />
+      <EditAssetForm />
     </div>
   )
 }

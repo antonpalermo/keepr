@@ -16,7 +16,7 @@ import AssetDeleteModal from "./delete-modal"
 import Link from "next/link"
 
 export default function TableMenu({ asset }: { asset: any }) {
-  const options = []
+  // const options = []
 
   return (
     <DropdownMenu>

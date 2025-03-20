@@ -9,9 +9,9 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog"
-import UpdateForm from "@/app/(main)/assets/_components/update-form"
+import EditAssetForm from "@/app/(main)/assets/_components/edit-asset"
 
-export default function EditAsset() {
+export default function EditAssetModal() {
   const router = useRouter()
 
   function handleOnOpenChange() {
@@ -27,7 +27,7 @@ export default function EditAsset() {
             Creates a new record for specific asset.
           </DialogDescription>
         </DialogHeader>
-        <UpdateForm />
+        <EditAssetForm />
       </DialogContent>
     </Dialog>
   )

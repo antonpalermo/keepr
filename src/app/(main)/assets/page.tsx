@@ -10,21 +10,13 @@ import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+import asset from "@/lib/mutations/assets"
+
 export default function AssetsPage() {
   const { data: assets, isPending } = useQuery({
     queryKey: ["assets"],
-    queryFn: async () => {
-      const request = await fetch("/api/assets")
-
-      if (!request.ok) {
-        throw new Error("unable to get all assets")
-      }
-
-      return await request.json()
-    }
+    queryFn: async () => await asset.get()
   })
-
-  if (isPending) return <h1>loading</h1>
 
   return (
     <Shell>
@@ -34,7 +26,7 @@ export default function AssetsPage() {
           <Link href={"/assets/new"}>Asset Registration</Link>
         </Button>
       </div>
-      <DataTable columns={columns} data={assets.data} />
+      {!isPending && <DataTable columns={columns} data={assets.data} />}
     </Shell>
   )
 }

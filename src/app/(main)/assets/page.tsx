@@ -2,15 +2,14 @@
 
 import * as React from "react"
 
-import columns from "./_components/columns"
-import { DataTable } from "./_components/data-table"
-
 import Shell from "@/components/shell"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 import asset from "@/lib/mutations/assets"
+import assetColumns from "@/components/asset-columns"
+import { AssetDataTable } from "@/components/asset-table"
 
 export default function AssetsPage() {
   const { data: assets, isPending } = useQuery({
@@ -26,7 +25,9 @@ export default function AssetsPage() {
           <Link href={"/assets/new"}>Asset Registration</Link>
         </Button>
       </div>
-      {!isPending && <DataTable columns={columns} data={assets.data} />}
+      {!isPending && (
+        <AssetDataTable columns={assetColumns} data={assets.data} />
+      )}
     </Shell>
   )
 }

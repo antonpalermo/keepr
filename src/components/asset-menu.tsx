@@ -15,7 +15,9 @@ import { EllipsisVerticalIcon, Pencil } from "lucide-react"
 import AssetDeleteModal from "./delete-modal"
 import Link from "next/link"
 
-export default function TableMenu({ asset }: { asset: any }) {
+import { AssetSchema } from "@/lib/schemas/asset"
+
+export default function AssetMenu({ asset }: { asset: AssetSchema }) {
   // const options = []
 
   return (

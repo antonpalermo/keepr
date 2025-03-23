@@ -16,10 +16,11 @@ import {
   DropdownMenuItem,
   DropdownMenuShortcut
 } from "@/components/ui/dropdown-menu"
+import { AssetSchema } from "@/lib/schemas/asset"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Trash2Icon } from "lucide-react"
 
-export default function AssetDeleteModal({ asset }: { asset: any }) {
+export default function AssetDeleteModal({ asset }: { asset: AssetSchema }) {
   const qClient = useQueryClient()
   const mutate = useMutation({
     mutationFn: async (id: string) => {

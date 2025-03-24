@@ -1,7 +1,13 @@
-import { AssetSchema } from "@/lib/schemas/asset"
-import { Form, useForm } from "react-hook-form"
+"use client"
+
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import assetSchema from "@/lib/schemas/asset"
 import { Button } from "./ui/button"
 import {
+  Form,
   FormField,
   FormItem,
   FormLabel,
@@ -10,15 +16,18 @@ import {
 } from "./ui/form"
 import { Input } from "./ui/input"
 
+type Asset = z.infer<typeof assetSchema>
+
 export type AssetFormProps = {
-  onSubmit: (values: AssetSchema) => void
+  onSubmit: (values: Asset) => void
 }
 
 export default function AssetForm({ onSubmit }: AssetFormProps) {
-  const form = useForm<AssetSchema>({
+  const form = useForm<Asset>({
     defaultValues: {
       name: ""
-    }
+    },
+    resolver: zodResolver(assetSchema)
   })
 
   return (
@@ -38,7 +47,7 @@ export default function AssetForm({ onSubmit }: AssetFormProps) {
           )}
         />
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Register
+          Submit
         </Button>
       </form>
     </Form>

@@ -1,18 +1,40 @@
 "use client"
 
+import { z } from "zod"
 import { useRouter } from "next/navigation"
+import { useQueryClient, useMutation } from "@tanstack/react-query"
 
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
+  DialogTitle,
   DialogHeader,
-  DialogTitle
+  DialogContent,
+  DialogDescription
 } from "@/components/ui/dialog"
-import RegisterAssetForm from "../../_components/form"
+
+import assetSchema from "@/lib/schemas/asset"
+import AssetMutation from "@/lib/mutations/assets"
+
+import AssetForm from "@/components/asset-form"
+
+type Asset = z.infer<typeof assetSchema>
 
 export default function NewAssetModal() {
   const router = useRouter()
+
+  const qClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async (values: Asset) => await AssetMutation.create(values),
+    onSuccess() {
+      qClient.invalidateQueries({ queryKey: ["assets"] })
+      // navigate back to previous page.
+      router.back()
+    }
+  })
+
+  async function onSubmit(values: Asset) {
+    mutation.mutate(values)
+  }
 
   function handleOnOpenChange() {
     router.back()
@@ -27,7 +49,7 @@ export default function NewAssetModal() {
             Creates a new record for specific asset.
           </DialogDescription>
         </DialogHeader>
-        <RegisterAssetForm />
+        <AssetForm onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   )

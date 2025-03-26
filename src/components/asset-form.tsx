@@ -9,6 +9,7 @@ import { Button } from "./ui/button"
 import { Form, FormField, FormItem, FormLabel, FormControl } from "./ui/form"
 
 import { Asset } from "@/models/assets"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 const assetSchema = z.object({
   name: z
@@ -24,6 +25,37 @@ export type AssetFormProps = {
 }
 
 export default function AssetForm({ asset }: AssetFormProps) {
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async (options: {
+      values: Omit<Asset, "id" | "dateCreated" | "dateUpdated">
+      isEdit?: boolean
+    }) => {
+      if (asset && options.isEdit) {
+        const request = await fetch(`/api/assets/${asset.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(options.values)
+        })
+
+        if (!request.ok) {
+          throw new Error("unable to edit asset")
+        }
+      }
+
+      const request = await fetch(`/api/assets`, {
+        method: "POST",
+        body: JSON.stringify(options.values)
+      })
+
+      if (!request.ok) {
+        throw new Error("unable to edit asset")
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["assets"] })
+    }
+  })
+
   const form = useForm<AssetSchema>({
     defaultValues: asset ? { name: asset.name } : { name: "" },
     resolver: zodResolver(assetSchema)
@@ -31,11 +63,16 @@ export default function AssetForm({ asset }: AssetFormProps) {
 
   async function onSubmit(values: AssetSchema) {
     if (asset) {
-      console.log("edit: ", values)
+      console.log("edit block: ")
+      mutation.mutate({
+        isEdit: true,
+        values
+      })
       return
     }
 
-    console.log("create: ", values)
+    console.log("create block: ")
+    mutation.mutate({ values })
   }
 
   return (

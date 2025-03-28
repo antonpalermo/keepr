@@ -10,6 +10,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "./ui/form"
 
 import { Asset } from "@/models/assets"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 
 const assetSchema = z.object({
   name: z
@@ -25,6 +26,8 @@ export type AssetFormProps = {
 }
 
 export default function AssetForm({ asset }: AssetFormProps) {
+  const router = useRouter()
+
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (options: {
@@ -40,6 +43,8 @@ export default function AssetForm({ asset }: AssetFormProps) {
         if (!request.ok) {
           throw new Error("unable to edit asset")
         }
+
+        return
       }
 
       const request = await fetch(`/api/assets`, {
@@ -53,6 +58,7 @@ export default function AssetForm({ asset }: AssetFormProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["assets"] })
+      router.back()
     }
   })
 

@@ -1,30 +1,22 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
+import { useQuery } from "@tanstack/react-query"
 
-import columns from "./_components/columns"
-import { DataTable } from "./_components/data-table"
+import { getAssets } from "@/lib/helpers/asset"
 
 import Shell from "@/components/shell"
-import { useQuery } from "@tanstack/react-query"
+import assetColumns from "@/components/asset-columns"
+
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { AssetDataTable } from "@/components/asset-table"
 
 export default function AssetsPage() {
   const { data: assets, isPending } = useQuery({
     queryKey: ["assets"],
-    queryFn: async () => {
-      const request = await fetch("/api/assets")
-
-      if (!request.ok) {
-        throw new Error("unable to get all assets")
-      }
-
-      return await request.json()
-    }
+    queryFn: async () => getAssets()
   })
-
-  if (isPending) return <h1>loading</h1>
 
   return (
     <Shell>
@@ -34,7 +26,9 @@ export default function AssetsPage() {
           <Link href={"/assets/new"}>Asset Registration</Link>
         </Button>
       </div>
-      <DataTable columns={columns} data={assets.data} />
+      {!isPending && (
+        <AssetDataTable columns={assetColumns} data={assets.data} />
+      )}
     </Shell>
   )
 }

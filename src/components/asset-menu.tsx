@@ -11,19 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVerticalIcon, PencilIcon } from "lucide-react"
+import { EllipsisVerticalIcon, Pencil } from "lucide-react"
 import AssetDeleteModal from "./delete-modal"
+import Link from "next/link"
 
-export default function TableMenu({ asset }: { asset: any }) {
-  const options = [
-    {
-      label: "Edit",
-      icon: <PencilIcon />,
-      onClick: () => {
-        console.log("edit" + asset.id)
-      }
-    }
-  ]
+import { AssetSchema } from "@/lib/schemas/asset"
+
+export default function AssetMenu({ asset }: { asset: AssetSchema }) {
+  // const options = []
 
   return (
     <DropdownMenu>
@@ -35,12 +30,13 @@ export default function TableMenu({ asset }: { asset: any }) {
       <DropdownMenuContent>
         <DropdownMenuLabel>Asset Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {options.map(option => (
-          <DropdownMenuItem key={option.label} onClick={option.onClick}>
-            {option.icon && option.icon}
-            {option.label}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuItem asChild>
+          <Link href={`/assets/${asset.id}/edit`}>
+            <Pencil />
+            <span>Edit</span>
+          </Link>
+        </DropdownMenuItem>
+
         <AssetDeleteModal asset={asset} />
       </DropdownMenuContent>
     </DropdownMenu>

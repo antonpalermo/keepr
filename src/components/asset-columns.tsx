@@ -1,19 +1,14 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
-import TableMenu from "./menu"
 import Link from "next/link"
+import { ColumnDef } from "@tanstack/react-table"
+
 import { Button } from "@/components/ui/button"
+import { AssetSchema } from "@/lib/schemas/asset"
 
-interface Asset {
-  id: string
-  name: string
-  dateCreated: Date
-  dateUpdated: Date
-}
+import AssetMenu from "./asset-menu"
 
-const columns: ColumnDef<Asset>[] = [
-  { accessorKey: "id", header: "ID" },
+const assetColumns: ColumnDef<AssetSchema>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -50,9 +45,9 @@ const columns: ColumnDef<Asset>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const asset = row.original
-      return <TableMenu asset={asset} />
+      return <AssetMenu asset={asset} />
     }
   }
 ]
 
-export default columns
+export default assetColumns

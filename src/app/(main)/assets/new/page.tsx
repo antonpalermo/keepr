@@ -1,4 +1,6 @@
-import RegisterAssetForm from "../_components/form"
+"use client"
+
+import AssetForm from "@/components/asset-form"
 
 export default function NewAssetPage() {
   return (
@@ -6,7 +8,7 @@ export default function NewAssetPage() {
       <h1 className="text-lg font-semibold leading-none tracking-tight">
         Register new asset
       </h1>
-      <RegisterAssetForm />
+      <AssetForm />
     </div>
   )
 }

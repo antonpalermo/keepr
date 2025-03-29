@@ -4,14 +4,15 @@ import { useRouter } from "next/navigation"
 
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
+  DialogTitle,
   DialogHeader,
-  DialogTitle
+  DialogContent,
+  DialogDescription
 } from "@/components/ui/dialog"
-import RegisterAssetForm from "../../_components/form"
 
-export default function NewAsset() {
+import AssetForm from "@/components/asset-form"
+
+export default function NewAssetModal() {
   const router = useRouter()
 
   function handleOnOpenChange() {
@@ -27,7 +28,7 @@ export default function NewAsset() {
             Creates a new record for specific asset.
           </DialogDescription>
         </DialogHeader>
-        <RegisterAssetForm />
+        <AssetForm />
       </DialogContent>
     </Dialog>
   )

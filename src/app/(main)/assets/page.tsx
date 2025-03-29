@@ -1,20 +1,21 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
+import { useQuery } from "@tanstack/react-query"
+
+import { getAssets } from "@/lib/helpers/asset"
 
 import Shell from "@/components/shell"
-import { useQuery } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-
-import asset from "@/lib/mutations/assets"
 import assetColumns from "@/components/asset-columns"
+
+import { Button } from "@/components/ui/button"
 import { AssetDataTable } from "@/components/asset-table"
 
 export default function AssetsPage() {
   const { data: assets, isPending } = useQuery({
     queryKey: ["assets"],
-    queryFn: async () => await asset.get()
+    queryFn: async () => getAssets()
   })
 
   return (

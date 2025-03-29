@@ -2,15 +2,16 @@
 
 import { z } from "zod"
 import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { Input } from "./ui/input"
 import { Button } from "./ui/button"
+import { Input } from "./ui/input"
 import { Form, FormField, FormItem, FormLabel, FormControl } from "./ui/form"
 
 import { Asset } from "@/models/assets"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { createAsset, updateAsset } from "@/lib/helpers/asset"
 
 const assetSchema = z.object({
   name: z
@@ -30,34 +31,15 @@ export default function AssetForm({ asset }: AssetFormProps) {
 
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (options: {
-      values: Omit<Asset, "id" | "dateCreated" | "dateUpdated">
-      isEdit?: boolean
-    }) => {
+    mutationFn: async (options: { isEdit?: boolean; values: AssetSchema }) => {
       if (asset && options.isEdit) {
-        const request = await fetch(`/api/assets/${asset.id}`, {
-          method: "PATCH",
-          body: JSON.stringify(options.values)
-        })
-
-        if (!request.ok) {
-          throw new Error("unable to edit asset")
-        }
-
-        return
+        return await updateAsset(asset.id, options.values)
       }
 
-      const request = await fetch(`/api/assets`, {
-        method: "POST",
-        body: JSON.stringify(options.values)
-      })
-
-      if (!request.ok) {
-        throw new Error("unable to edit asset")
-      }
+      return await createAsset(options.values)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assets"] })
+      queryClient.invalidateQueries({ queryKey: ["assets", "asset"] })
       router.back()
     }
   })
@@ -69,7 +51,6 @@ export default function AssetForm({ asset }: AssetFormProps) {
 
   async function onSubmit(values: AssetSchema) {
     if (asset) {
-      console.log("edit block: ")
       mutation.mutate({
         isEdit: true,
         values
@@ -77,7 +58,6 @@ export default function AssetForm({ asset }: AssetFormProps) {
       return
     }
 
-    console.log("create block: ")
     mutation.mutate({ values })
   }
 

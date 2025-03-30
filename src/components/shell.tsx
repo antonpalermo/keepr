@@ -5,7 +5,7 @@ function Heading({ ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
 }
 
 function Shell({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...props} />
+  return <div className="space-y-5" {...props} />
 }
 
 Shell.Heading = Heading

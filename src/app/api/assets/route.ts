@@ -1,34 +1,22 @@
 import { NextRequest } from "next/server"
 
-import assets from "@/models/assets"
-import connect from "@/lib/database"
-
 import { db } from "@/db"
 import { asset } from "@/db/schema"
 import { toErrorMap } from "@/lib/error-map"
 import { assetSchema } from "@/lib/zod-schema/asset"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    await connect()
-    const result = await assets.find()
+    const data = await db.select().from(asset)
 
-    return Response.json(
-      {
-        success: true,
-        data: result,
-        message: "successfully fetched all available assets"
-      },
-      { status: 200 }
-    )
+    return Response.json({
+      success: true,
+      data,
+      message: "susccessfully retrieved assets"
+    })
   } catch (error) {
-    return Response.json(
-      {
-        success: false,
-        message: "failed to fetched all available assets"
-      },
-      { status: 500 }
-    )
+    console.log(error)
+    return Response.json("unable to retrieve all asset data", { status: 500 })
   }
 }
 

@@ -15,11 +15,9 @@ import { EllipsisVerticalIcon, Pencil } from "lucide-react"
 import AssetDeleteModal from "./delete-modal"
 import Link from "next/link"
 
-import { AssetSchema } from "@/lib/schemas/asset"
+import { Asset } from "@/lib/types"
 
-export default function AssetMenu({ asset }: { asset: AssetSchema }) {
-  // const options = []
-
+export default function AssetMenu({ asset }: { asset: Asset }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

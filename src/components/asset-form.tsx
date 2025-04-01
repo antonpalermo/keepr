@@ -1,6 +1,5 @@
 "use client"
 
-import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -10,17 +9,11 @@ import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Form, FormField, FormItem, FormLabel, FormControl } from "./ui/form"
 
-import { Asset } from "@/models/assets"
+import { Asset } from "@/lib/types"
+import { assetSchema } from "@/lib/zod-schema/asset"
 import { createAsset, updateAsset } from "@/lib/helpers/asset"
 
-const assetSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Asset name must be at least 3 characters long" })
-    .max(220, { message: "Asset name exceed the required limit" })
-})
-
-type AssetSchema = z.infer<typeof assetSchema>
+type AssetSchema = Omit<Asset, "id" | "dateCreated" | "dateUpdated">
 
 export type AssetFormProps = {
   asset?: Asset
@@ -39,7 +32,7 @@ export default function AssetForm({ asset }: AssetFormProps) {
       return await createAsset(options.values)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assets", "asset"] })
+      queryClient.invalidateQueries({ queryKey: ["assets"] })
       router.back()
     }
   })

@@ -8,7 +8,8 @@ import {
   text,
   integer,
   primaryKey,
-  boolean
+  boolean,
+  jsonb
 } from "drizzle-orm/pg-core"
 import type { AdapterAccount } from "next-auth/adapters"
 
@@ -118,4 +119,17 @@ export const asset = pgTable(
     index("id_asset_index").on(table.id),
     uniqueIndex("id_asset_unique_index").on(table.id)
   ]
+)
+
+export const logger = pgTable(
+  "logs",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    code: integer(),
+    data: jsonb(),
+    message: text()
+  },
+  table => [index("id_log_index").on(table.id)]
 )

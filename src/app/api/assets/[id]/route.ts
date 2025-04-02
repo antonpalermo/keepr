@@ -13,11 +13,10 @@ export async function GET(
   const { id } = await params
 
   try {
-    await connect()
-    const result = await assets.findById(id)
+    const [result] = await db.select().from(asset).where(eq(asset.id, id))
 
     if (!result) {
-      return NextResponse.json(
+      return Response.json(
         {
           success: false,
           message: `unable to locate ${id}`
@@ -26,24 +25,14 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: result,
-        message: `successfully fetched asset ${id}`
-      },
-      { status: 200 }
-    )
+    return Response.json({
+      success: true,
+      data: result,
+      message: `${id} successfully fetched`
+    })
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "server is currently unreachable, please try again later."
-      },
-      {
-        status: 500
-      }
-    )
+    console.log(error)
+    return Response.json("unable to insert data", { status: 500 })
   }
 }
 

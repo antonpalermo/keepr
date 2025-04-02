@@ -82,7 +82,17 @@ export async function DELETE(
   const { id } = await params
 
   try {
-    const [result] = await db.select().from(asset).where(eq(asset.id, id))
+    const selectAsset = db
+      .$with("selectAsset")
+      .as(db.select().from(asset).where(eq(asset.id, id)))
+
+    const [result] = await db
+      .with(selectAsset)
+      .delete(asset)
+      .where(eq(asset.id, id))
+      .returning({
+        id: asset.id
+      })
 
     if (!result) {
       return Response.json(
@@ -93,8 +103,6 @@ export async function DELETE(
         { status: 404 }
       )
     }
-
-    await db.delete(asset).where(eq(asset.id, id))
 
     return Response.json(
       {

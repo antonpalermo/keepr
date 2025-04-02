@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 
 import assets from "@/models/assets"
 import connect from "@/lib/database"
+import { db } from "@/db"
+import { asset } from "@/db/schema"
+import { eq } from "drizzle-orm"
 
 export async function GET(
   request: NextRequest,
@@ -95,37 +98,31 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+
   try {
-    await connect()
-    const result = await assets.findByIdAndDelete(id, { new: true })
+    const [result] = await db.select().from(asset).where(eq(asset.id, id))
 
     if (!result) {
-      return NextResponse.json(
+      return Response.json(
         {
           success: false,
-          message: `unable to locate ${id}`
+          errors: `${id} not exist`
         },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(
+    await db.delete(asset).where(eq(asset.id, id))
+
+    return Response.json(
       {
         success: true,
-        data: result,
         message: `asset ${id} successfully deleted`
       },
       { status: 200 }
     )
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "server is currently unreachable, please try again later."
-      },
-      {
-        status: 500
-      }
-    )
+    console.log(error)
+    return Response.json("unable to insert data", { status: 500 })
   }
 }

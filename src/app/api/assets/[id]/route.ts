@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 
-import assets from "@/models/assets"
-import connect from "@/lib/database"
+import { db } from "@/db"
+import { asset } from "@/db/schema"
+import { eq } from "drizzle-orm"
 
 export async function GET(
   request: NextRequest,
@@ -10,11 +11,10 @@ export async function GET(
   const { id } = await params
 
   try {
-    await connect()
-    const result = await assets.findById(id)
+    const [result] = await db.select().from(asset).where(eq(asset.id, id))
 
     if (!result) {
-      return NextResponse.json(
+      return Response.json(
         {
           success: false,
           message: `unable to locate ${id}`
@@ -23,24 +23,14 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: result,
-        message: `successfully fetched asset ${id}`
-      },
-      { status: 200 }
-    )
+    return Response.json({
+      success: true,
+      data: result,
+      message: `${id} successfully fetched`
+    })
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "server is currently unreachable, please try again later."
-      },
-      {
-        status: 500
-      }
-    )
+    console.log(error)
+    return Response.json("unable to insert data", { status: 500 })
   }
 }
 
@@ -49,44 +39,39 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+
   const body = await request.json()
 
   try {
-    await connect()
-    const result = await assets.findByIdAndUpdate(
-      id,
-      { ...body },
-      { new: true }
-    )
+    const selectAsset = db
+      .$with("selectAsset")
+      .as(db.select().from(asset).where(eq(asset.id, id)))
+
+    const [result] = await db
+      .with(selectAsset)
+      .update(asset)
+      .set(body)
+      .where(eq(asset.id, id))
+      .returning()
 
     if (!result) {
-      return NextResponse.json(
+      return Response.json(
         {
           success: false,
-          message: `unable to locate ${id}`
+          errors: `${id} not exist`
         },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: result,
-        message: `asset ${id} successfully updated`
-      },
-      { status: 200 }
-    )
+    return Response.json({
+      success: true,
+      data: result,
+      message: `${id} successfully updated`
+    })
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "server is currently unreachable, please try again later."
-      },
-      {
-        status: 500
-      }
-    )
+    console.log(error)
+    return Response.json("unable to insert data", { status: 500 })
   }
 }
 
@@ -95,37 +80,39 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+
   try {
-    await connect()
-    const result = await assets.findByIdAndDelete(id, { new: true })
+    const selectAsset = db
+      .$with("selectAsset")
+      .as(db.select().from(asset).where(eq(asset.id, id)))
+
+    const [result] = await db
+      .with(selectAsset)
+      .delete(asset)
+      .where(eq(asset.id, id))
+      .returning({
+        id: asset.id
+      })
 
     if (!result) {
-      return NextResponse.json(
+      return Response.json(
         {
           success: false,
-          message: `unable to locate ${id}`
+          errors: `${id} not exist`
         },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(
+    return Response.json(
       {
         success: true,
-        data: result,
         message: `asset ${id} successfully deleted`
       },
       { status: 200 }
     )
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "server is currently unreachable, please try again later."
-      },
-      {
-        status: 500
-      }
-    )
+    console.log(error)
+    return Response.json("unable to insert data", { status: 500 })
   }
 }

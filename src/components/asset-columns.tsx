@@ -4,11 +4,11 @@ import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
-import { AssetSchema } from "@/lib/schemas/asset"
+import { Asset } from "@/lib/types"
 
 import AssetMenu from "./asset-menu"
 
-const assetColumns: ColumnDef<AssetSchema>[] = [
+const assetColumns: ColumnDef<Asset>[] = [
   {
     accessorKey: "name",
     header: "Name",

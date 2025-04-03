@@ -1,7 +1,8 @@
 "use client"
 
-import { useSession } from "next-auth/react"
 import Image from "next/image"
+
+import UserMenu from "@/components/user-menu"
 
 function Logo() {
   return (
@@ -13,25 +14,6 @@ function Logo() {
         height={30}
       />
       <span className="font-bold text-xl">Keepr</span>
-    </div>
-  )
-}
-
-function UserMenu() {
-  const session = useSession({
-    required: true
-  })
-
-  return (
-    <div className="relative w-10 h-10">
-      {session.data?.user && (
-        <Image
-          src={session.data.user.image || "/default-avatar.png"}
-          alt="user avatar"
-          className="rounded-full"
-          fill
-        />
-      )}
     </div>
   )
 }

@@ -106,6 +106,11 @@ export const asset = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: varchar({ length: 256 }),
+    quantity: integer("quantity").notNull().default(1),
+    assignee: text()
+      .array()
+      .notNull()
+      .default(sql`ARRAY[]::text[]`),
     dateCreated: timestamp().defaultNow(),
     dateUpdated: timestamp().default(sql`now()`)
   },

@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Asset } from "@/lib/types"
 
-import AssetMenu from "./asset-menu"
+import AssetMenu from "@/components/asset-menu"
 
 const assetColumns: ColumnDef<Asset>[] = [
   {
@@ -19,6 +19,14 @@ const assetColumns: ColumnDef<Asset>[] = [
         </Button>
       )
     }
+  },
+  {
+    accessorKey: "quantity",
+    header: "Quantity"
+  },
+  {
+    accessorKey: "assignee",
+    header: "Assignee"
   },
   {
     accessorKey: "dateCreated",

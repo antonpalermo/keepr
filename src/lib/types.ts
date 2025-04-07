@@ -4,3 +4,5 @@ export type Asset = {
   dateCreated: Date
   dateUpdated: Date
 }
+
+export type Role = "admin" | "user"

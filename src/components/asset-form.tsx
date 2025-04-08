@@ -1,5 +1,6 @@
 "use client"
 
+import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,7 +14,7 @@ import { Asset } from "@/lib/types"
 import { assetSchema } from "@/lib/zod-schema/asset"
 import { createAsset, updateAsset } from "@/lib/helpers/asset"
 
-type AssetSchema = Omit<Asset, "id" | "dateCreated" | "dateUpdated">
+type AssetSchema = z.infer<typeof assetSchema>
 
 export type AssetFormProps = {
   asset?: Asset
@@ -38,7 +39,9 @@ export default function AssetForm({ asset }: AssetFormProps) {
   })
 
   const form = useForm<AssetSchema>({
-    defaultValues: asset ? { name: asset.name } : { name: "" },
+    defaultValues: asset
+      ? { name: asset.name, quantity: asset.quantity, assignee: asset.assignee }
+      : { name: "", quantity: 1, assignee: [] },
     resolver: zodResolver(assetSchema)
   })
 
@@ -56,7 +59,7 @@ export default function AssetForm({ asset }: AssetFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
           name="name"
@@ -65,6 +68,33 @@ export default function AssetForm({ asset }: AssetFormProps) {
               <FormLabel>Asset name</FormLabel>
               <FormControl>
                 <Input placeholder="AOC Monitor" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="quantity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantity</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="assignee"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Assignee</FormLabel>
+              <FormControl>
+                <div className="flex w-full items-center space-x-2">
+                  <Input type="text" {...field} placeholder="Email" />
+                  <Button type="submit">Assign</Button>
+                </div>
               </FormControl>
             </FormItem>
           )}

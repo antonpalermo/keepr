@@ -9,8 +9,11 @@ import {
   integer,
   primaryKey,
   boolean,
-  jsonb
+  jsonb,
+  pgEnum
 } from "drizzle-orm/pg-core"
+
+export const roleEnum = pgEnum("role", ["admin", "user"])
 
 export const users = pgTable("users", {
   id: text("id")
@@ -18,6 +21,7 @@ export const users = pgTable("users", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
+  role: roleEnum(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image")
 })

@@ -15,16 +15,25 @@ import {
 
 export const roleEnum = pgEnum("role", ["admin", "user"])
 
-export const users = pgTable("users", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
-  email: text("email").unique(),
-  role: roleEnum(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  image: text("image")
-})
+export const users = pgTable(
+  "users",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name"),
+    email: text("email").unique(),
+    role: roleEnum(),
+    emailVerified: timestamp("emailVerified", { mode: "date" }),
+    image: text("image")
+  },
+  table => [
+    index("email_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${table.email})`
+    )
+  ]
+)
 
 export const accounts = pgTable(
   "accounts",

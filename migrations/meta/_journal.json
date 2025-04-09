@@ -64,6 +64,13 @@
       "when": 1744123937466,
       "tag": "0008_needy_cloak",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1744210592120,
+      "tag": "0009_ambitious_gargoyle",
+      "breakpoints": true
     }
   ]
 }

@@ -5,17 +5,18 @@ import { NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
-  const email = searchParams.get("email")
-
-  console.log("fired")
+  const query = searchParams.get("query")
 
   try {
     const result = await db
-      .select()
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        image: users.image
+      })
       .from(users)
-      .where(
-        sql`to_tsvector('english', ${users.email}) @@ to_tsquery('english', ${email})`
-      )
+      .where(sql`email % ${query}`)
 
     return Response.json({
       success: true,
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.log(error)
-    return Response.json(`unable to retrieve all users with email ${email}`, {
+    return Response.json(`unable to retrieve all users with query ${query}`, {
       status: 500
     })
   }

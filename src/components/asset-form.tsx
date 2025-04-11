@@ -13,6 +13,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "./ui/form"
 import { Asset } from "@/lib/types"
 import { assetSchema } from "@/lib/zod-schema/asset"
 import { createAsset, updateAsset } from "@/lib/helpers/asset"
+import UserAutocomplete from "./user-autocomplete"
 
 type AssetSchema = z.infer<typeof assetSchema>
 
@@ -84,21 +85,7 @@ export default function AssetForm({ asset }: AssetFormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="assignee"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Assignee</FormLabel>
-              <FormControl>
-                <div className="flex w-full items-center space-x-2">
-                  <Input type="text" {...field} placeholder="Email" />
-                  <Button type="submit">Assign</Button>
-                </div>
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <UserAutocomplete />
         <Button type="submit">{asset ? "Update" : "Create"}</Button>
       </form>
     </Form>

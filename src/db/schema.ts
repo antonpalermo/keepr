@@ -141,3 +141,12 @@ export const logger = pgTable(
   },
   table => [index("id_log_index").on(table.id)]
 )
+
+export const organization = pgTable("organizations", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar({ length: 256 }),
+  dateCreated: timestamp().defaultNow(),
+  dateUpdated: timestamp().default(sql`now()`)
+})

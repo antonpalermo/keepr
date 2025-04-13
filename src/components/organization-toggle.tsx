@@ -1,4 +1,4 @@
-import { ChevronsUpDown } from "lucide-react"
+import { Building2, ChevronsUpDown } from "lucide-react"
 import { Button } from "./ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import {
@@ -6,13 +6,15 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-  CommandList
+  CommandList,
+  CommandSeparator
 } from "./ui/command"
-import { organization } from "@/db/schema"
+import { organizations } from "@/db/schema"
 import { db } from "@/db"
+import Link from "next/link"
 
 export default async function OrganizationToggle() {
-  const organizations = await db.select().from(organization)
+  const orgs = await db.select().from(organizations)
 
   return (
     <Popover>
@@ -22,14 +24,23 @@ export default async function OrganizationToggle() {
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 px-2 py-2">
+      <PopoverContent className="w-80 px-0 py-0">
         <Command>
           <CommandList>
             <CommandEmpty>No organization available</CommandEmpty>
-            <CommandGroup>
-              {organizations.map(org => (
+            <CommandGroup heading="Organizations">
+              {orgs.map(org => (
                 <CommandItem key={org.id}>{org.name}</CommandItem>
               ))}
+            </CommandGroup>
+            <CommandSeparator />
+            <CommandGroup>
+              <CommandItem asChild>
+                <Link href={"/organizations/new"} className="cursor-pointer">
+                  <Building2 />
+                  Create new organization
+                </Link>
+              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>

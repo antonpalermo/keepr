@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm"
+import { relations, sql } from "drizzle-orm"
 import {
   index,
   pgTable,
@@ -142,11 +142,30 @@ export const logger = pgTable(
   table => [index("id_log_index").on(table.id)]
 )
 
-export const organization = pgTable("organizations", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: varchar({ length: 256 }),
-  dateCreated: timestamp().defaultNow(),
-  dateUpdated: timestamp().default(sql`now()`)
-})
+export const userRelations = relations(users, ({ many }) => ({
+  organizations: many(organizations)
+}))
+
+export const organizations = pgTable(
+  "organizations",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: varchar({ length: 256 }),
+    ownerId: text("owner_id"),
+    dateCreated: timestamp().defaultNow(),
+    dateUpdated: timestamp().default(sql`now()`)
+  },
+  table => [
+    index("id_organization_index").on(table.id),
+    index("id_org_owner_index").on(table.ownerId)
+  ]
+)
+
+export const organizationRalations = relations(organizations, ({ one }) => ({
+  owner: one(users, {
+    fields: [organizations.ownerId],
+    references: [users.id]
+  })
+}))

@@ -153,19 +153,19 @@ export const organizations = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: varchar({ length: 256 }),
-    ownerId: text("owner_id"),
+    owner: text("owner"),
     dateCreated: timestamp().defaultNow(),
     dateUpdated: timestamp().default(sql`now()`)
   },
   table => [
     index("id_organization_index").on(table.id),
-    index("id_org_owner_index").on(table.ownerId)
+    index("id_org_owner_index").on(table.owner)
   ]
 )
 
 export const organizationRalations = relations(organizations, ({ one }) => ({
   owner: one(users, {
-    fields: [organizations.ownerId],
-    references: [users.id]
+    fields: [organizations.owner],
+    references: [users.email]
   })
 }))

@@ -1,3 +1,11 @@
+import OrganizationForm from "@/components/organization-form"
+import Shell from "@/components/shell"
+
 export default function NewOrganizationPage() {
-  return <h1>Create new organization</h1>
+  return (
+    <Shell>
+      <Shell.Heading>Create new organization</Shell.Heading>
+      <OrganizationForm />
+    </Shell>
+  )
 }

@@ -5,10 +5,13 @@ import { organizations } from "@/db/schema"
 
 import { toErrorMap } from "@/lib/error-map"
 import { organizationSchema } from "@/lib/zod-schema/organization"
+import { getServerSession } from "next-auth"
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
   const parsed = organizationSchema.safeParse(body)
+
+  const session = await getServerSession()
 
   if (!parsed.success) {
     return Response.json(
@@ -24,7 +27,7 @@ export async function POST(request: NextRequest) {
   try {
     const [data] = await db
       .insert(organizations)
-      .values(parsed.data)
+      .values({ ...parsed.data, owner: session?.user.email })
       .returning()
 
     return Response.json({

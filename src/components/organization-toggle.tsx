@@ -1,6 +1,8 @@
-import { Building2, ChevronsUpDown } from "lucide-react"
+import Link from "next/link"
+import { cookies } from "next/headers"
+import { Building2, Check, ChevronsUpDown } from "lucide-react"
+
 import { Button } from "./ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import {
   Command,
   CommandEmpty,
@@ -10,17 +12,23 @@ import {
   CommandSeparator
 } from "./ui/command"
 import { organizations } from "@/db/schema"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+
 import { db } from "@/db"
-import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 export default async function OrganizationToggle() {
+  const cookieStore = await cookies()
   const orgs = await db.select().from(organizations)
+
+  const defaultOrganization = cookieStore.get("organization")?.value
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-80 justify-between">
-          Select Organization
+          {orgs.find(org => org.id === defaultOrganization)?.name ||
+            "Select an organization"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -30,7 +38,17 @@ export default async function OrganizationToggle() {
             <CommandEmpty>No organization available</CommandEmpty>
             <CommandGroup heading="Organizations">
               {orgs.map(org => (
-                <CommandItem key={org.id}>{org.name}</CommandItem>
+                <CommandItem key={org.id}>
+                  {org.name}
+                  <Check
+                    className={cn(
+                      "ml-auto",
+                      defaultOrganization === org.id
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                </CommandItem>
               ))}
             </CommandGroup>
             <CommandSeparator />

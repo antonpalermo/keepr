@@ -6,11 +6,10 @@ import { organizations } from "@/db/schema"
 import { toErrorMap } from "@/lib/error-map"
 import { organizationSchema } from "@/lib/zod-schema/organization"
 import { getServerSession } from "next-auth"
-import { cookies } from "next/headers"
+import { setCookie } from "@/lib/actions/set-cookie"
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const cookieStore = await cookies()
   const parsed = organizationSchema.safeParse(body)
 
   const session = await getServerSession()
@@ -32,9 +31,7 @@ export async function POST(request: NextRequest) {
       .values({ ...parsed.data, owner: session?.user.email })
       .returning()
 
-    cookieStore.set("organization", data.id, {
-      maxAge: 1000 * 60 * 60 * 24 * 365 // org cookie store for a year.
-    })
+    setCookie("organization", data.id)
 
     return Response.json({
       success: true,

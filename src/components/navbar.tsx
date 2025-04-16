@@ -3,7 +3,7 @@ import OrganizationToggle from "./organization-toggle"
 import { organizations } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { getServerSession } from "next-auth"
-import { cookies } from "next/headers"
+import { setCookie } from "@/lib/actions/set-cookie"
 
 async function getOrganization(email: string) {
   const data = await db
@@ -12,12 +12,6 @@ async function getOrganization(email: string) {
     .where(eq(organizations.owner, email))
 
   return data
-}
-
-async function updateDefaultOrganization(id: string) {
-  "use server"
-  const cookieStore = await cookies()
-  cookieStore.set("organization", id, { maxAge: 1000 * 60 * 60 * 24 * 365 })
 }
 
 export default async function Navbar() {
@@ -32,10 +26,7 @@ export default async function Navbar() {
   return (
     <nav className="container mx-auto px-5">
       <div className="flex w-full py-5">
-        <OrganizationToggle
-          organizations={orgs}
-          onSelect={updateDefaultOrganization}
-        />
+        <OrganizationToggle organizations={orgs} onSelect={setCookie} />
         <span className="grow" />
       </div>
     </nav>

@@ -1,6 +1,20 @@
 import { useState, useEffect } from "react"
 
 function useCookies() {
+  const parseCookies = (cookieString: string): { [key: string]: string } => {
+    const cookieObject: { [key: string]: string } = {}
+    if (cookieString) {
+      const cookiesArray = cookieString.split(";")
+      cookiesArray.forEach(cookie => {
+        const [name, ...valueParts] = cookie.trim().split("=")
+        if (name && valueParts.length > 0) {
+          cookieObject[name] = decodeURIComponent(valueParts.join("="))
+        }
+      })
+    }
+    return cookieObject
+  }
+
   const [cookies, setCookies] = useState(() => {
     if (typeof document === "undefined") {
       return {}
@@ -23,20 +37,6 @@ function useCookies() {
       clearInterval(intervalId)
     }
   }, [])
-
-  const parseCookies = (cookieString: string): { [key: string]: string } => {
-    const cookieObject: { [key: string]: string } = {}
-    if (cookieString) {
-      const cookiesArray = cookieString.split(";")
-      cookiesArray.forEach(cookie => {
-        const [name, ...valueParts] = cookie.trim().split("=")
-        if (name && valueParts.length > 0) {
-          cookieObject[name] = decodeURIComponent(valueParts.join("="))
-        }
-      })
-    }
-    return cookieObject
-  }
 
   const getCookie = (name: string): string | undefined => {
     return cookies[name]

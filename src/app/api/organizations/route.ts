@@ -32,7 +32,9 @@ export async function POST(request: NextRequest) {
       .values({ ...parsed.data, owner: session?.user.email })
       .returning()
 
-    cookieStore.set("organization", data.id)
+    cookieStore.set("organization", data.id, {
+      maxAge: 1000 * 60 * 60 * 24 * 365 // org cookie store for a year.
+    })
 
     return Response.json({
       success: true,

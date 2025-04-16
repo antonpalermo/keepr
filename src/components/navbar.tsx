@@ -17,7 +17,7 @@ async function getOrganization(email: string) {
 async function updateDefaultOrganization(id: string) {
   "use server"
   const cookieStore = await cookies()
-  cookieStore.set("organization", id)
+  cookieStore.set("organization", id, { maxAge: 1000 * 60 * 60 * 24 * 365 })
 }
 
 export default async function Navbar() {

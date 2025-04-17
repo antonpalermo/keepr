@@ -9,13 +9,25 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { createOrganization } from "@/lib/helpers/organization"
+import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 type OrganizationSchema = z.infer<typeof organizationSchema>
 
 export default function OrganizationForm() {
+  const { toast } = useToast()
+  const router = useRouter()
+
   const mutation = useMutation({
     mutationFn: async (data: OrganizationSchema) => {
       return await createOrganization(data)
+    },
+    onSuccess: data => {
+      toast({
+        title: "New organization created 🎉",
+        description: `You can now track and monitor assets under ${data.data.name}`
+      })
+      router.push(`/${data.data.id}`)
     }
   })
 

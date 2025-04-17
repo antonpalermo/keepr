@@ -23,8 +23,8 @@ export default async function HomePage() {
     // if no orgs for this user throw a not found
     // but much better if we redirect them to create
     // a new organization.
-    if (!orgs) {
-      return notFound()
+    if (!orgs[0]) {
+      return redirect("/organizations/new")
     }
 
     // then redirect to the first organization available.

@@ -1,9 +1,10 @@
-import { db } from "@/db"
-import OrganizationToggle from "./organization-toggle"
-import { organizations } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { getServerSession } from "next-auth"
-import { setCookie } from "@/lib/actions/set-cookie"
+
+import { db } from "@/db"
+import { organizations } from "@/db/schema"
+
+import OrganizationToggle from "./organization-toggle"
 
 async function getOrganization(email: string) {
   const data = await db
@@ -26,7 +27,7 @@ export default async function Navbar() {
   return (
     <nav className="container mx-auto px-5">
       <div className="flex w-full py-5">
-        <OrganizationToggle organizations={orgs} onSelect={setCookie} />
+        <OrganizationToggle organizations={orgs} />
         <span className="grow" />
       </div>
     </nav>

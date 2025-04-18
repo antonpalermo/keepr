@@ -9,6 +9,7 @@ import QueryClientProvider from "@/components/providers/query-client"
 import { options } from "@/app/api/auth/options"
 
 import "./global.css"
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata = {
   title: "Welcome to keepr",
@@ -31,7 +32,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={cn(inter.className, "min-h-screen")}>
         <SessionProvider session={session}>
-          <QueryClientProvider>{children}</QueryClientProvider>
+          <QueryClientProvider>
+            {children}
+            <Toaster />
+          </QueryClientProvider>
         </SessionProvider>
       </body>
     </html>

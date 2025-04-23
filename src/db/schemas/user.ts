@@ -19,6 +19,7 @@ export const user = orm.pgTable(
   },
   table => [
     orm.index("users_id_index").on(table.id),
-    orm.index("users_email_index").on(table.email)
+    orm.index("users_email_index").on(table.email),
+    orm.uniqueIndex("users_email_unique_index").on(table.email)
   ]
 )

@@ -7,7 +7,6 @@ export const session = orm.pgTable("sessions", {
   id: orm
     .text()
     .notNull()
-    .primaryKey()
     .$defaultFn(() => createId()),
   sessionToken: orm.text("session_token").primaryKey(),
   userId: orm

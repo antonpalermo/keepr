@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm"
 import { getServerSession } from "next-auth"
 
 import { db } from "@/db"
-import { organizations } from "@/db/schema"
+import { organizations } from "@/db/schemas/organization"
 
 import OrganizationToggle from "./organization-toggle"
 

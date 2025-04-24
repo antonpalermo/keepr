@@ -1,9 +1,9 @@
 import { db } from "@/db"
-import { organizations } from "@/db/schema"
+import { organizations } from "@/db/schemas/organization"
 import { eq } from "drizzle-orm"
 import { getServerSession } from "next-auth"
 import { cookies } from "next/headers"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
 export default async function HomePage() {
   const session = await getServerSession()

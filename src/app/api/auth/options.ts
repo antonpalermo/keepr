@@ -1,16 +1,14 @@
 import { type AuthOptions, type DefaultSession } from "next-auth"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 
-import { db } from "@/db"
-
 import GoogleProvider from "next-auth/providers/google"
-import {
-  users,
-  accounts,
-  sessions,
-  authenticators,
-  verificationTokens
-} from "@/db/schema"
+
+import { db } from "@/db"
+import { user } from "@/db/schemas/user"
+import { account } from "@/db/schemas/account"
+import { session } from "@/db/schemas/session"
+import { authenticator } from "@/db/schemas/authenticator"
+import { verificationToken } from "@/db/schemas/verification-token"
 
 declare module "next-auth" {
   interface User {
@@ -33,11 +31,11 @@ declare module "next-auth/jwt" {
 
 export const options: AuthOptions = {
   adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    authenticatorsTable: authenticators,
-    verificationTokensTable: verificationTokens
+    usersTable: user,
+    accountsTable: account,
+    sessionsTable: session,
+    authenticatorsTable: authenticator,
+    verificationTokensTable: verificationToken
   }),
   providers: [
     GoogleProvider({

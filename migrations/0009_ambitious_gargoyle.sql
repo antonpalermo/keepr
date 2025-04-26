@@ -1,1 +1,0 @@
-CREATE INDEX "email_search_index" ON "users" USING gin (to_tsvector('english', "email"));

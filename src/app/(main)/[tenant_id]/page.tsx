@@ -1,15 +1,13 @@
-import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
 
-import { db } from "@/db"
-import { tenant } from "@/db/schemas/tenant"
-
 import Shell from "@/components/shell"
+import { Button } from "@/components/ui/button"
+import { PlusCircle } from "lucide-react"
+import Link from "next/link"
 
 export default async function TenantPage() {
   const session = await getServerSession()
-  const assets = await db.select().from(tenant).where(eq(tenant.owner, ""))
 
   if (!session) {
     return redirect("/something-404")
@@ -17,10 +15,15 @@ export default async function TenantPage() {
 
   return (
     <Shell>
-      <div>
+      <div className="w-full flex flex-row justify-between">
         <Shell.Heading>Assets</Shell.Heading>
+        <Button asChild>
+          <Link href={"/asset/new"}>
+            <PlusCircle /> New Asset
+          </Link>
+        </Button>
       </div>
-      {JSON.stringify(assets)}
+      
     </Shell>
   )
 }

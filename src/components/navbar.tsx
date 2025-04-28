@@ -2,32 +2,28 @@ import { eq } from "drizzle-orm"
 import { getServerSession } from "next-auth"
 
 import { db } from "@/db"
-import { organizations } from "@/db/schemas/organization"
+import { tenant } from "@/db/schemas/tenant"
 
-import OrganizationToggle from "./organization-toggle"
+import TenantToggle from "./tenant-toggle"
 
-async function getOrganization(email: string) {
-  const data = await db
-    .select()
-    .from(organizations)
-    .where(eq(organizations.owner, email))
+async function getTenants(email: string) {
+  const data = await db.select().from(tenant).where(eq(tenant.owner, email))
 
   return data
 }
 
 export default async function Navbar() {
   const session = await getServerSession()
+  const tenants = await getTenants(session?.user.email ?? "")
 
-  const orgs = await getOrganization(session?.user.email || "")
-
-  if (!orgs) {
-    throw new Error("orgs is null")
+  if (!tenants) {
+    throw new Error("tenants is null")
   }
 
   return (
     <nav className="container mx-auto px-5">
       <div className="flex w-full py-5">
-        <OrganizationToggle organizations={orgs} />
+        <TenantToggle tenants={tenants} />
         <span className="grow" />
       </div>
     </nav>

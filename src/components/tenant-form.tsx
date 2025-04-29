@@ -1,26 +1,28 @@
 "use client"
 
-import { useForm } from "react-hook-form"
-import { useMutation } from "@tanstack/react-query"
 import { z } from "zod"
-import { organizationSchema } from "@/lib/zod-schema/organization"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { createOrganization } from "@/lib/helpers/organization"
-import { useToast } from "@/hooks/use-toast"
+import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
+import { useMutation } from "@tanstack/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-type OrganizationSchema = z.infer<typeof organizationSchema>
+import { Input } from "./ui/input"
+import { Button } from "./ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
 
-export default function OrganizationForm() {
-  const { toast } = useToast()
+import { useToast } from "@/hooks/use-toast"
+import { createTenant } from "@/lib/helpers/tenant"
+import { tenantSchema } from "@/lib/zod-schema/tenant"
+
+type TenantSchema = z.infer<typeof tenantSchema>
+
+export default function TenantForm() {
   const router = useRouter()
+  const { toast } = useToast()
 
   const mutation = useMutation({
-    mutationFn: async (data: OrganizationSchema) => {
-      return await createOrganization(data)
+    mutationFn: async (data: TenantSchema) => {
+      return await createTenant(data)
     },
     onSuccess: data => {
       toast({
@@ -31,14 +33,14 @@ export default function OrganizationForm() {
     }
   })
 
-  const form = useForm<OrganizationSchema>({
+  const form = useForm<TenantSchema>({
     defaultValues: {
       name: ""
     },
-    resolver: zodResolver(organizationSchema)
+    resolver: zodResolver(tenantSchema)
   })
 
-  async function onSubmit(data: OrganizationSchema) {
+  async function onSubmit(data: TenantSchema) {
     mutation.mutate(data)
   }
 

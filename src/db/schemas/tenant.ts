@@ -3,8 +3,8 @@ import * as pgCore from "drizzle-orm/pg-core"
 
 import { createId } from "@paralleldrive/cuid2"
 
-import { timestamp } from "./timestamp"
 import { user } from "./user"
+import { timestamp } from "./timestamp"
 
 export const tenant = pgCore.pgTable(
   "tenants",
@@ -30,3 +30,6 @@ export const tenantRelations = orm.relations(tenant, ({ one }) => ({
     references: [user.email]
   })
 }))
+
+export type TenantInsertDTO = orm.InferInsertModel<typeof tenant>
+export type TenantSelectDTO = orm.InferSelectModel<typeof tenant>

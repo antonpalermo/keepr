@@ -1,16 +1,15 @@
 import { NextRequest } from "next/server"
+import { getServerSession } from "next-auth"
 
 import { db } from "@/db"
-import { organizations } from "@/db/schema"
+import { tenant } from "@/db/schemas/tenant"
 
 import { toErrorMap } from "@/lib/error-map"
-import { organizationSchema } from "@/lib/zod-schema/organization"
-import { getServerSession } from "next-auth"
-import { setCookie } from "@/lib/actions/set-cookie"
+import { tenantSchema } from "@/lib/zod-schema/tenant"
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const parsed = organizationSchema.safeParse(body)
+  const parsed = tenantSchema.safeParse(body)
 
   const session = await getServerSession()
 
@@ -27,11 +26,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const [data] = await db
-      .insert(organizations)
-      .values({ ...parsed.data, owner: session?.user.email })
+      .insert(tenant)
+      .values({ ...parsed.data, owner: session?.user.email ?? "" })
       .returning()
-
-    setCookie("organization", data.id)
 
     return Response.json({
       success: true,

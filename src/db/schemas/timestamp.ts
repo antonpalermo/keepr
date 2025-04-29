@@ -5,6 +5,7 @@ export const timestamp = {
   dateUpdated: orm
     .timestamp("date_updated")
     .defaultNow()
+    .notNull()
     .$onUpdateFn(() => new Date()),
   dateDeleted: orm.timestamp("date_deleted")
 }

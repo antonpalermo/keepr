@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Building2, Check, ChevronsUpDown } from "lucide-react"
-
 import Link from "next/link"
 
-import { Button } from "./ui/button"
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import { Building2, Check, ChevronsUpDown } from "lucide-react"
+
 import {
   Command,
   CommandEmpty,
@@ -14,22 +14,16 @@ import {
   CommandList,
   CommandSeparator
 } from "./ui/command"
-
+import { Button } from "./ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 import { cn } from "@/lib/utils"
-import { useParams, useRouter } from "next/navigation"
+import { TenantSelectDTO } from "@/db/schemas/tenant"
 
-export default function OrganizationToggle({
-  organizations
+export default function TenantToggle({
+  tenants
 }: {
-  organizations: {
-    id: string
-    name: string | null
-    owner: string | null
-    dateCreated: Date | null
-    dateUpdated: Date | null
-  }[]
+  tenants: TenantSelectDTO[]
 }) {
   const [mounted, setMounted] = useState(false)
 
@@ -48,17 +42,17 @@ export default function OrganizationToggle({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-80 justify-between">
-          {organizations.find(org => org.id === params.org)?.name ||
-            "Select an organization"}
+          {tenants.find(tenant => tenant.id === params.tenant_id)?.name ||
+            "Select Tenant"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 px-0 py-0">
         <Command>
           <CommandList>
-            <CommandEmpty>No organization available</CommandEmpty>
-            <CommandGroup heading="Organizations">
-              {organizations.map(org => (
+            <CommandEmpty>No tenants available</CommandEmpty>
+            <CommandGroup heading="Tenants">
+              {tenants.map(org => (
                 <CommandItem
                   key={org.id}
                   onSelect={() => router.push(`/${org.id}`)}
@@ -76,9 +70,9 @@ export default function OrganizationToggle({
             <CommandSeparator />
             <CommandGroup>
               <CommandItem asChild>
-                <Link href={"/organizations/new"} className="cursor-pointer">
+                <Link href={"/tenants/new"} className="cursor-pointer">
                   <Building2 />
-                  Create new organization
+                  Create new tenant
                 </Link>
               </CommandItem>
             </CommandGroup>

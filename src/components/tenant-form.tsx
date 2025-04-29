@@ -12,16 +12,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
 
 import { useToast } from "@/hooks/use-toast"
 import { createTenant } from "@/lib/helpers/tenant"
-import { organizationSchema } from "@/lib/zod-schema/organization"
+import { tenantSchema } from "@/lib/zod-schema/tenant"
 
-type OrganizationSchema = z.infer<typeof organizationSchema>
+type TenantSchema = z.infer<typeof tenantSchema>
 
 export default function TenantForm() {
   const router = useRouter()
   const { toast } = useToast()
 
   const mutation = useMutation({
-    mutationFn: async (data: OrganizationSchema) => {
+    mutationFn: async (data: TenantSchema) => {
       return await createTenant(data)
     },
     onSuccess: data => {
@@ -33,14 +33,14 @@ export default function TenantForm() {
     }
   })
 
-  const form = useForm<OrganizationSchema>({
+  const form = useForm<TenantSchema>({
     defaultValues: {
       name: ""
     },
-    resolver: zodResolver(organizationSchema)
+    resolver: zodResolver(tenantSchema)
   })
 
-  async function onSubmit(data: OrganizationSchema) {
+  async function onSubmit(data: TenantSchema) {
     mutation.mutate(data)
   }
 

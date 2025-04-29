@@ -5,11 +5,11 @@ import { db } from "@/db"
 import { tenant } from "@/db/schemas/tenant"
 
 import { toErrorMap } from "@/lib/error-map"
-import { organizationSchema } from "@/lib/zod-schema/organization"
+import { tenantSchema } from "@/lib/zod-schema/tenant"
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const parsed = organizationSchema.safeParse(body)
+  const parsed = tenantSchema.safeParse(body)
 
   const session = await getServerSession()
 

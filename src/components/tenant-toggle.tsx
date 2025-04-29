@@ -50,8 +50,8 @@ export default function TenantToggle({
       <PopoverContent className="w-80 px-0 py-0">
         <Command>
           <CommandList>
-            <CommandEmpty>No tenant available</CommandEmpty>
-            <CommandGroup heading="Organizations">
+            <CommandEmpty>No tenants available</CommandEmpty>
+            <CommandGroup heading="Tenants">
               {tenants.map(org => (
                 <CommandItem
                   key={org.id}

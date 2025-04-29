@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const organizationSchema = z.object({
+export const tenantSchema = z.object({
   name: z
     .string()
     .min(3, { message: "Asset name must be at least 3 characters long" })

@@ -16,6 +16,7 @@ export const tenant = pgCore.pgTable(
       .$defaultFn(() => createId()),
     name: pgCore.text().notNull(),
     owner: pgCore.text().notNull(),
+    members: pgCore.jsonb().$type<string[]>().default([]),
     ...timestamp
   },
   table => [
